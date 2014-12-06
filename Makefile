@@ -6,14 +6,16 @@ FUNCTION_FILES = $(wildcard Functions/*.cpp)
 PROBLEM = 0
 
 define MAKE_CORE
-    @echo "Building problem loader...";
-    @g++ -Wall -std=c++0x $(MAIN_FILES) $(FUNCTION_FILES) -ldl -o build/project-euler;
+    echo "Building problem loader...";
+	mkdir -p build;
+    g++ -Wall -Wformat=0 -std=c++0x $(MAIN_FILES) $(FUNCTION_FILES) -ldl -o build/project-euler;
 endef
 
 define MAKE_LIB
     echo "Building $(notdir $(1))...";
+	mkdir -p build;
     $(eval PROBLEM_FILES := $(wildcard $(1)/*.cpp))
-    g++ -Wall -std=c++0x -O0 -shared $(PROBLEM_FILES) -o build/$(notdir $(1)).so;
+    g++ -Wall -Wformat=0 -std=c++0x -O0 -shared $(PROBLEM_FILES) -o build/$(notdir $(1)).so;
 endef
 
 define CLEAN_LIB
@@ -25,7 +27,7 @@ endef
 all: loader all_problems
 
 loader:	
-	$(call MAKE_CORE)
+	@$(call MAKE_CORE)
 
 all_problems:
 	@$(foreach dir,$(PROBLEMS),$(call MAKE_LIB, $(dir)))
